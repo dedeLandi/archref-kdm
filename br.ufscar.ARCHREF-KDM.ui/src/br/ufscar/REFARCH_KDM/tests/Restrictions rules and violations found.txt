@@ -1,0 +1,19 @@
+Restrictions rules
+
+	repository can-depend-only controller, model
+	only controller can-depend repository
+	only controller can-depend validator
+	genericInterface can-depend-only controller
+	converterInterface can-depend-only controller 
+	validatorInterface can-depend-only controller
+
+	only controller can-depend model
+	only view can-depend controller
+
+
+Violations found: 
+
+	25 actions between repository and converter
+	24 actions between model and generic
+	44 actions between validator and repository
+	34 actions between validator and model	
