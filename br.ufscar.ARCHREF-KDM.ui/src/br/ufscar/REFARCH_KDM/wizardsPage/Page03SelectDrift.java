@@ -17,9 +17,9 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
-import br.ufscar.REFARCH_KDM.readDrifts.ArchitecturalDrift;
-import br.ufscar.REFARCH_KDM.readDrifts.ReadDriftsAlgorithm;
-import br.ufscar.REFARCH_KDM.readDrifts.ReadDriftsFromKDMFile;
+import br.ufscar.archref_kdm.core.readDrifts.ArchitecturalDrift;
+import br.ufscar.archref_kdm.core.readDrifts.ReadDriftsAlgorithm;
+import br.ufscar.archref_kdm.core.readDrifts.ReadDriftsFromKDMFile;
 
 public class Page03SelectDrift extends WizardPage {
 	private Table tDrifts;

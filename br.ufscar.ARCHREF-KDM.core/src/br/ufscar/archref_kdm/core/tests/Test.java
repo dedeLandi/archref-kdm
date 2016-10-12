@@ -1,4 +1,4 @@
-package br.ufscar.REFARCH_KDM.tests;
+package br.ufscar.archref_kdm.core.tests;
 
 import java.util.Map;
 

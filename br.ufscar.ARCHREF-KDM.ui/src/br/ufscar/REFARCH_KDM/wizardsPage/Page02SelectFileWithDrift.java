@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import br.ufscar.REFARCH_KDM.readDrifts.ReadDriftsAlgorithm;
+import br.ufscar.archref_kdm.core.readDrifts.ReadDriftsAlgorithm;
 
 public class Page02SelectFileWithDrift extends WizardPage {
 

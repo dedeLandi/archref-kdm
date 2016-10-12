@@ -1,4 +1,4 @@
-package br.ufscar.REFARCH_KDM.readDrifts;
+package br.ufscar.archref_kdm.core.readDrifts;
 
 import java.util.ArrayList;
 import java.util.List;
