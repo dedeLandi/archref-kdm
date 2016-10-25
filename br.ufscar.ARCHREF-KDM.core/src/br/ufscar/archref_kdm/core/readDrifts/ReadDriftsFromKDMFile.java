@@ -2,7 +2,8 @@ package br.ufscar.archref_kdm.core.readDrifts;
 
 import java.util.List;
 
-import br.ufscar.KDM_MANAGEMENT.load.KDMFileReader;
+import br.ufscar.kdm_manager.core.exceptions.KDMFileException;
+import br.ufscar.kdm_manager.core.loads.factory.KDMFileReaderFactory;
 
 public class ReadDriftsFromKDMFile {
 
@@ -19,11 +20,19 @@ public class ReadDriftsFromKDMFile {
 	}
 
 	public List<ArchitecturalDrift> getKDMDriftsRead() {
-		
-		Object KDMFile = new KDMFileReader(KDMPath, KDMFileReader.READ_KDM_TO_SEGMENT).getKdmRead();
-		
-		return algorithmType.readDrifts(KDMFile);
-		
+
+		Object KDMFile;
+		try {
+			KDMFile = KDMFileReaderFactory.eINSTANCE.createKDMFileReaderToSegment().readFromPath(KDMPath);
+			return algorithmType.readDrifts(KDMFile);
+		} catch (KDMFileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		};
+
+		return null;		
+
+
 	}
-	
+
 }
