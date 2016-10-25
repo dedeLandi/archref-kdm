@@ -4,20 +4,20 @@
    <extension
          point="org.eclipse.ui.commands">
       <category
-            id="br.ufscar.REFARCH_KDM.ui.commands.ARFcategory"
+            id="br.ufscar.archref_kdm.ui.commands.ARFcategory"
             name="Architectural Refactoring">
       </category>
       <command
-            categoryId="br.ufscar.REFARCH_KDM.ui.commands.ARFcategory"
-            id="br.ufscar.REFARCH_KDM.ui.commands.ARFcommand"
+            categoryId="br.ufscar.archref_kdm.ui.commands.ARFcategory"
+            id="br.ufscar.archref_kdm.ui.commands.ARFcommand"
             name="Architectural Refactoring Command">
       </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="br.ufscar.REFARCH_KDM.handlers.ArchitecturalRefactoringHandler"
-            commandId="br.ufscar.REFARCH_KDM.ui.commands.ARFcommand">
+            class="br.ufscar.archref_kdm.ui.handlers.ArchitecturalRefactoringHandler"
+            commandId="br.ufscar.archref_kdm.ui.commands.ARFcommand">
       </handler>
    </extension>
    <extension
@@ -25,11 +25,11 @@
       <menuContribution
             locationURI="menu:org.eclipse.ui.main.menu?after=additions">
          <menu
-               id="br.ufscar.REFARCH_KDM.ui.menus.ARFmenu"
+               id="br.ufscar.archref_kdm.ui.menus.ARFmenu"
                label="Architectural Reconciliation">
             <command
-                  commandId="br.ufscar.REFARCH_KDM.ui.commands.ARFcommand"
-                  id="br.ufscar.REFARCH_KDM.ui.menus.ARFcommand"
+                  commandId="br.ufscar.archref_kdm.ui.commands.ARFcommand"
+                  id="br.ufscar.archref_kdm.ui.menus.ARFcommand"
                   label="Architectural Refactoring Wizard">
             </command>
          </menu>
