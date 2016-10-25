@@ -1,17 +1,17 @@
-package br.ufscar.REFARCH_KDM.wizards;
+package br.ufscar.archref_kdm.ui.wizards;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 
-import br.ufscar.REFARCH_KDM.wizardsPage.Page01Introduction;
-import br.ufscar.REFARCH_KDM.wizardsPage.Page02SelectFileWithDrift;
-import br.ufscar.REFARCH_KDM.wizardsPage.Page03SelectDrift;
-import br.ufscar.REFARCH_KDM.wizardsPage.Page04ProcessAnalisis;
-import br.ufscar.REFARCH_KDM.wizardsPage.Page05FillRefactoringCatalog;
-import br.ufscar.REFARCH_KDM.wizardsPage.Page05ProcessFillRefactoringCatalog;
-import br.ufscar.REFARCH_KDM.wizardsPage.Page06SelectRefactoringToDo;
-import br.ufscar.REFARCH_KDM.wizardsPage.Page07ProcessEffectRefactor;
-import br.ufscar.REFARCH_KDM.wizardsPage.Page08SaveAndFinish;
+import br.ufscar.archref_kdm.ui.wizardsPage.Page01Introduction;
+import br.ufscar.archref_kdm.ui.wizardsPage.Page02SelectFileWithDrift;
+import br.ufscar.archref_kdm.ui.wizardsPage.Page03SelectDrift;
+import br.ufscar.archref_kdm.ui.wizardsPage.Page04ProcessAnalisis;
+import br.ufscar.archref_kdm.ui.wizardsPage.Page05FillRefactoringCatalog;
+import br.ufscar.archref_kdm.ui.wizardsPage.Page05ProcessFillRefactoringCatalog;
+import br.ufscar.archref_kdm.ui.wizardsPage.Page06SelectRefactoringToDo;
+import br.ufscar.archref_kdm.ui.wizardsPage.Page07ProcessEffectRefactor;
+import br.ufscar.archref_kdm.ui.wizardsPage.Page08SaveAndFinish;
 
 public class ArchitecturalRefactoringWizard extends Wizard {
 	

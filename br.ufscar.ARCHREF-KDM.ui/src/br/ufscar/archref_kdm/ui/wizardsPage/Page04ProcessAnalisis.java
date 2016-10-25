@@ -1,9 +1,10 @@
-package br.ufscar.REFARCH_KDM.wizardsPage;
+package br.ufscar.archref_kdm.ui.wizardsPage;
 
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
@@ -12,17 +13,19 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-public class Page05ProcessFillRefactoringCatalog extends WizardPage {
+public class Page04ProcessAnalisis extends WizardPage {
 
 	private boolean canFlip = false;
+	private boolean analisisComplete = false;
 	
+
 	/**
 	 * Create the wizard.
 	 */
-	public Page05ProcessFillRefactoringCatalog() {
-		super("page05_1");
+	public Page04ProcessAnalisis() {
+		super("page04");
 		setTitle("Architectural Refactoring Wizard");
-		setDescription("Fill the recommendation catalog.");
+		setDescription("Processing the recommendation.");
 	}
 
 	/**
@@ -44,25 +47,25 @@ public class Page05ProcessFillRefactoringCatalog extends WizardPage {
 		btnInitiateProcessing.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				initiateFillCatalog();
+				initiateRecommendation();
 			}
 		});
 		btnInitiateProcessing.setBounds(240, 71, 108, 25);
-		btnInitiateProcessing.setText("Generate Recommendation");
+		btnInitiateProcessing.setText("Initiate Processing");
 
 		Label lWait = new Label(container, SWT.NONE);
 		lWait.setAlignment(SWT.CENTER);
 		lWait.setBounds(10, 128, 554, 59);
-		lWait.setText("Please, wait while is generated a recommendation for drift X.");
+		lWait.setText("Please, wait while is performed processing refactorings recommendation for drift X.");
 	}
-	
-	private void initiateFillCatalog() {
+
+	private void initiateRecommendation() {
 		try {
 			// puts the data into a database ...
 			getContainer().run(true, true, new IRunnableWithProgress() {
 				public void run(IProgressMonitor monitor)
 						throws InvocationTargetException, InterruptedException {
-					monitor.beginTask("Generating recommendation", 100);
+					monitor.beginTask("Processing the recomendation", 100);
 					monitor.worked(0);
 
 
@@ -75,6 +78,7 @@ public class Page05ProcessFillRefactoringCatalog extends WizardPage {
 					monitor.done();
 
 					setCanFlip(true);
+					setAnalisisComplete(true);
 					
 				}
 			});
@@ -84,6 +88,15 @@ public class Page05ProcessFillRefactoringCatalog extends WizardPage {
 			ex.printStackTrace();
 		} catch (InterruptedException ex) {
 			ex.printStackTrace();
+		}
+	}
+	
+	@Override
+	public IWizardPage getNextPage() {
+		if(isAnalisisComplete()){
+			return getWizard().getPage("page06");
+		}else{
+			return getWizard().getPage("page05_1");
 		}
 	}
 	
@@ -98,6 +111,14 @@ public class Page05ProcessFillRefactoringCatalog extends WizardPage {
 
 	public void setCanFlip(boolean canFlip) {
 		this.canFlip = canFlip;
+	}
+
+	public boolean isAnalisisComplete() {
+		return analisisComplete;
+	}
+
+	public void setAnalisisComplete(boolean analisisComplete) {
+		this.analisisComplete = analisisComplete;
 	}
 
 }

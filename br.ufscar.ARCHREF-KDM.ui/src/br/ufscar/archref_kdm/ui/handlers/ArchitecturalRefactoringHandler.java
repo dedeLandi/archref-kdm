@@ -1,4 +1,4 @@
-package br.ufscar.REFARCH_KDM.handlers;
+package br.ufscar.archref_kdm.ui.handlers;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -8,7 +8,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
-import br.ufscar.REFARCH_KDM.wizards.ArchitecturalRefactoringWizard;
+import br.ufscar.archref_kdm.ui.wizards.ArchitecturalRefactoringWizard;
 
 public class ArchitecturalRefactoringHandler extends AbstractHandler {
 	/**

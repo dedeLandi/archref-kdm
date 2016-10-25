@@ -1,4 +1,4 @@
-package br.ufscar.REFARCH_KDM.wizardsPage;
+package br.ufscar.archref_kdm.ui.wizardsPage;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -12,17 +12,17 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-public class Page07ProcessEffectRefactor extends WizardPage {
+public class Page05ProcessFillRefactoringCatalog extends WizardPage {
 
 	private boolean canFlip = false;
-
+	
 	/**
 	 * Create the wizard.
 	 */
-	public Page07ProcessEffectRefactor() {
-		super("page07");
+	public Page05ProcessFillRefactoringCatalog() {
+		super("page05_1");
 		setTitle("Architectural Refactoring Wizard");
-		setDescription("Executing the recommendation.");
+		setDescription("Fill the recommendation catalog.");
 	}
 
 	/**
@@ -38,31 +38,31 @@ public class Page07ProcessEffectRefactor extends WizardPage {
 		Label lInformation = new Label(container, SWT.NONE);
 		lInformation.setAlignment(SWT.CENTER);
 		lInformation.setBounds(10, 10, 554, 44);
-		lInformation.setText("For execute the recommendation, possibly take a long time.\r\nIf you want to continue, click in the button below.");
+		lInformation.setText("For process this algorithm, possibly take a long time.\r\nIf you want to continue, click in the button below.");
 
 		Button btnInitiateProcessing = new Button(container, SWT.NONE);
 		btnInitiateProcessing.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				initiateRecommendation();
+				initiateFillCatalog();
 			}
 		});
 		btnInitiateProcessing.setBounds(240, 71, 108, 25);
-		btnInitiateProcessing.setText("Initiate execute");
+		btnInitiateProcessing.setText("Generate Recommendation");
 
 		Label lWait = new Label(container, SWT.NONE);
 		lWait.setAlignment(SWT.CENTER);
 		lWait.setBounds(10, 128, 554, 59);
-		lWait.setText("Please, wait while is executing the refactoring recommendation X.");
+		lWait.setText("Please, wait while is generated a recommendation for drift X.");
 	}
-
-	private void initiateRecommendation() {
+	
+	private void initiateFillCatalog() {
 		try {
 			// puts the data into a database ...
 			getContainer().run(true, true, new IRunnableWithProgress() {
 				public void run(IProgressMonitor monitor)
 						throws InvocationTargetException, InterruptedException {
-					monitor.beginTask("Executing the recomendation", 100);
+					monitor.beginTask("Generating recommendation", 100);
 					monitor.worked(0);
 
 

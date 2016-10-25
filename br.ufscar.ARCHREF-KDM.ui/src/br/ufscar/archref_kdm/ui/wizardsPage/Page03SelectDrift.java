@@ -1,4 +1,4 @@
-package br.ufscar.REFARCH_KDM.wizardsPage;
+package br.ufscar.archref_kdm.ui.wizardsPage;
 
 import java.util.List;
 

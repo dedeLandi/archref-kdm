@@ -1,10 +1,9 @@
-package br.ufscar.REFARCH_KDM.wizardsPage;
+package br.ufscar.archref_kdm.ui.wizardsPage;
 
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
@@ -13,19 +12,17 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-public class Page04ProcessAnalisis extends WizardPage {
+public class Page07ProcessEffectRefactor extends WizardPage {
 
 	private boolean canFlip = false;
-	private boolean analisisComplete = false;
-	
 
 	/**
 	 * Create the wizard.
 	 */
-	public Page04ProcessAnalisis() {
-		super("page04");
+	public Page07ProcessEffectRefactor() {
+		super("page07");
 		setTitle("Architectural Refactoring Wizard");
-		setDescription("Processing the recommendation.");
+		setDescription("Executing the recommendation.");
 	}
 
 	/**
@@ -41,7 +38,7 @@ public class Page04ProcessAnalisis extends WizardPage {
 		Label lInformation = new Label(container, SWT.NONE);
 		lInformation.setAlignment(SWT.CENTER);
 		lInformation.setBounds(10, 10, 554, 44);
-		lInformation.setText("For process this algorithm, possibly take a long time.\r\nIf you want to continue, click in the button below.");
+		lInformation.setText("For execute the recommendation, possibly take a long time.\r\nIf you want to continue, click in the button below.");
 
 		Button btnInitiateProcessing = new Button(container, SWT.NONE);
 		btnInitiateProcessing.addMouseListener(new MouseAdapter() {
@@ -51,12 +48,12 @@ public class Page04ProcessAnalisis extends WizardPage {
 			}
 		});
 		btnInitiateProcessing.setBounds(240, 71, 108, 25);
-		btnInitiateProcessing.setText("Initiate Processing");
+		btnInitiateProcessing.setText("Initiate execute");
 
 		Label lWait = new Label(container, SWT.NONE);
 		lWait.setAlignment(SWT.CENTER);
 		lWait.setBounds(10, 128, 554, 59);
-		lWait.setText("Please, wait while is performed processing refactorings recommendation for drift X.");
+		lWait.setText("Please, wait while is executing the refactoring recommendation X.");
 	}
 
 	private void initiateRecommendation() {
@@ -65,7 +62,7 @@ public class Page04ProcessAnalisis extends WizardPage {
 			getContainer().run(true, true, new IRunnableWithProgress() {
 				public void run(IProgressMonitor monitor)
 						throws InvocationTargetException, InterruptedException {
-					monitor.beginTask("Processing the recomendation", 100);
+					monitor.beginTask("Executing the recomendation", 100);
 					monitor.worked(0);
 
 
@@ -78,7 +75,6 @@ public class Page04ProcessAnalisis extends WizardPage {
 					monitor.done();
 
 					setCanFlip(true);
-					setAnalisisComplete(true);
 					
 				}
 			});
@@ -88,15 +84,6 @@ public class Page04ProcessAnalisis extends WizardPage {
 			ex.printStackTrace();
 		} catch (InterruptedException ex) {
 			ex.printStackTrace();
-		}
-	}
-	
-	@Override
-	public IWizardPage getNextPage() {
-		if(isAnalisisComplete()){
-			return getWizard().getPage("page06");
-		}else{
-			return getWizard().getPage("page05_1");
 		}
 	}
 	
@@ -111,14 +98,6 @@ public class Page04ProcessAnalisis extends WizardPage {
 
 	public void setCanFlip(boolean canFlip) {
 		this.canFlip = canFlip;
-	}
-
-	public boolean isAnalisisComplete() {
-		return analisisComplete;
-	}
-
-	public void setAnalisisComplete(boolean analisisComplete) {
-		this.analisisComplete = analisisComplete;
 	}
 
 }
