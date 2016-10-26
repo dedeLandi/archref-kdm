@@ -26,6 +26,9 @@ public class Page02SelectFileWithDrift extends WizardPage {
 	private Text tPathFileDrifts;
 	private Text tPathFilePlanned;
 	private Text tPathFileActual;
+	private Combo cbTypeActualArchitecture;
+	private static final String ALREAD_MAPPED = "Architectural Elements Alread Mapped";
+	private static final String ORIGINAL_MAP = "Original (From Discover)";
 
 	/**
 	 * Create the wizard.
@@ -98,6 +101,13 @@ public class Page02SelectFileWithDrift extends WizardPage {
 			}
 		});
 		bSearchPlanned.setText("Search");
+		
+		Label lblTypeOfActual = new Label(container, SWT.NONE);
+		lblTypeOfActual.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblTypeOfActual.setText("Type of Actual Architecture");
+		
+		cbTypeActualArchitecture = new Combo(container, SWT.READ_ONLY);
+		cbTypeActualArchitecture.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
 		Label lFileActualArchitecture = new Label(container, SWT.NONE);
 		lFileActualArchitecture.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -117,6 +127,8 @@ public class Page02SelectFileWithDrift extends WizardPage {
 		bSearchActual.setText("Search");
 
 		fillCbAlgorithm();
+		
+		fillCbType();
 	}
 
 	protected void chooseFileDrifts() {
@@ -185,12 +197,27 @@ public class Page02SelectFileWithDrift extends WizardPage {
 		for (ReadDriftsAlgorithm algo : ReadDriftsAlgorithm.values()) {
 			cbAlgorithm.add(algo.getDescription());
 		}
-
+	}
+	
+	private void fillCbType() {
+		cbTypeActualArchitecture.removeAll();
+		cbAlgorithm.add(ALREAD_MAPPED);
+		cbAlgorithm.add(ORIGINAL_MAP);
 	}
 
 	private boolean validateCbAlgorithm() {
 		if(cbAlgorithm.getSelectionIndex() == -1) {  
 			setErrorMessage("Select one type of algorithm to continue.");
+			return false;
+		}else{
+			setErrorMessage(null); // clear error message. 
+			return true;
+		}
+	}
+	
+	private boolean validateCbType() {
+		if(cbAlgorithm.getSelectionIndex() == -1) {  
+			setErrorMessage("Select one type of actual architecture to continue.");
 			return false;
 		}else{
 			setErrorMessage(null); // clear error message. 
@@ -243,7 +270,7 @@ public class Page02SelectFileWithDrift extends WizardPage {
 	
 	@Override
 	public boolean canFlipToNextPage() {
-		return validateCbAlgorithm() && validateTPathFileDrifts() && validateTPathFilePlanned() && validateTPathFileActual();
+		return validateCbAlgorithm() && validateTPathFileDrifts() && validateTPathFilePlanned() && validateTPathFileActual() && validateCbType();
 	}
 
 	public String getPathKDMFile() {
@@ -256,8 +283,22 @@ public class Page02SelectFileWithDrift extends WizardPage {
 
 	@Override
 	public IWizardPage getNextPage() {
-		((Page03SelectDrift) super.getNextPage()).fillTDrifts();
-		return super.getNextPage();
+		if(isMapped()){
+			((Page03SelectDrift) super.getNextPage()).fillTDrifts();
+			return getWizard().getPage("page03");
+		}else{
+			((Page02MapArchitecture) super.getNextPage()).fillPlannedArchitecture();
+			((Page02MapArchitecture) super.getNextPage()).fillActualArchitecture();
+			return getWizard().getPage("page02_1");
+		}
+	}
+
+	/**
+	 * @author Landi
+	 * @return
+	 */
+	private boolean isMapped() {
+		return cbTypeActualArchitecture.getText().equalsIgnoreCase(ALREAD_MAPPED);
 	}
 
 }
