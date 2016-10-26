@@ -1,9 +1,11 @@
 package br.ufscar.archref_kdm.ui.wizards;
 
+import org.eclipse.gmt.modisco.omg.kdm.kdm.Segment;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 
 import br.ufscar.archref_kdm.ui.wizardsPage.Page01Introduction;
+import br.ufscar.archref_kdm.ui.wizardsPage.Page02MapArchitecture;
 import br.ufscar.archref_kdm.ui.wizardsPage.Page02SelectFileWithDrift;
 import br.ufscar.archref_kdm.ui.wizardsPage.Page03SelectDrift;
 import br.ufscar.archref_kdm.ui.wizardsPage.Page04ProcessAnalisis;
@@ -14,7 +16,6 @@ import br.ufscar.archref_kdm.ui.wizardsPage.Page07ProcessEffectRefactor;
 import br.ufscar.archref_kdm.ui.wizardsPage.Page08SaveAndFinish;
 
 public class ArchitecturalRefactoringWizard extends Wizard {
-	
 	
 	private Page01Introduction page1 = new Page01Introduction();
 	private Page02SelectFileWithDrift page2 = new Page02SelectFileWithDrift();
@@ -27,6 +28,11 @@ public class ArchitecturalRefactoringWizard extends Wizard {
 	private Page05ProcessFillRefactoringCatalog page5_1 = new Page05ProcessFillRefactoringCatalog();
 	private Page05FillRefactoringCatalog page5_2 = new Page05FillRefactoringCatalog();
 
+	private Page02MapArchitecture page2_1 = new Page02MapArchitecture();
+	
+	private Segment setPlannedArchitecture = null;
+	private Segment setActualArchitecture = null;
+
 	public ArchitecturalRefactoringWizard() {
 		setWindowTitle("Architectural Refactoring Wizard");
 		setNeedsProgressMonitor(true);
@@ -36,6 +42,7 @@ public class ArchitecturalRefactoringWizard extends Wizard {
 	public void addPages() {
 		addPage(page1);
 		addPage(page2);
+		addPage(page2_1);
 		addPage(page3);
 		addPage(page4);
 		addPage(page5_1);
@@ -67,6 +74,34 @@ public class ArchitecturalRefactoringWizard extends Wizard {
 			return true;
 		else
 			return false;
-	}  
+	}
+
+	/**
+	 * @return the setPlannedArchitecture
+	 */
+	public Segment getSetPlannedArchitecture() {
+		return setPlannedArchitecture;
+	}
+
+	/**
+	 * @param setPlannedArchitecture the setPlannedArchitecture to set
+	 */
+	public void setSetPlannedArchitecture(Segment setPlannedArchitecture) {
+		this.setPlannedArchitecture = setPlannedArchitecture;
+	}
+
+	/**
+	 * @return the setActualArchitecture
+	 */
+	public Segment getSetActualArchitecture() {
+		return setActualArchitecture;
+	}
+
+	/**
+	 * @param setActualArchitecture the setActualArchitecture to set
+	 */
+	public void setSetActualArchitecture(Segment setActualArchitecture) {
+		this.setActualArchitecture = setActualArchitecture;
+	}
 
 }
