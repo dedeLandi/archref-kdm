@@ -1,7 +1,5 @@
 package br.ufscar.archref_kdm.ui.wizardsPage;
 
-import java.util.List;
-
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -16,10 +14,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-
-import br.ufscar.archref_kdm.core.readDrifts.ArchitecturalDrift;
-import br.ufscar.archref_kdm.core.readDrifts.ReadDriftsAlgorithm;
-import br.ufscar.archref_kdm.core.readDrifts.ReadDriftsFromKDMFile;
 
 public class Page03SelectDrift extends WizardPage {
 	private Table tDrifts;
@@ -113,20 +107,20 @@ public class Page03SelectDrift extends WizardPage {
 	}
 
 	public void fillTDrifts() {
-		tDrifts.removeAll();
-		String KDMFilePath = ((Page02SelectFileWithDrift) getWizard().getPage("page02")).getPathKDMFile();
-		ReadDriftsAlgorithm algorithmType = ((Page02SelectFileWithDrift) getWizard().getPage("page02")).getAlgorithmType();
-		
-		ReadDriftsFromKDMFile readDrifts = new ReadDriftsFromKDMFile(KDMFilePath, algorithmType);
-		List<ArchitecturalDrift> drifts = readDrifts.getKDMDriftsRead();
-		
-		for (ArchitecturalDrift architecturalDrift : drifts) {
-			
-			TableItem item = new TableItem(tDrifts, SWT.NONE);
-
-			item.setText(new String[]{architecturalDrift.getDescription()});
-		}
-		tDrifts.setRedraw(true);
+//		tDrifts.removeAll();
+//		String KDMFilePath = ((Page02SelectFileWithDrift) getWizard().getPage("page02")).getPathKDMFile();
+//		ReadDriftsAlgorithm algorithmType = ((Page02SelectFileWithDrift) getWizard().getPage("page02")).getAlgorithmType();
+//		
+//		ReadDriftsFromKDMFile readDrifts = new ReadDriftsFromKDMFile(KDMFilePath, algorithmType);
+//		List<ArchitecturalDrift> drifts = readDrifts.getKDMDriftsRead();
+//		
+//		for (ArchitecturalDrift architecturalDrift : drifts) {
+//			
+//			TableItem item = new TableItem(tDrifts, SWT.NONE);
+//
+//			item.setText(new String[]{architecturalDrift.getDescription()});
+//		}
+//		tDrifts.setRedraw(true);
 	}
 
 	@Override
