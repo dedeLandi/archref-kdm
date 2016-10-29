@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import br.ufscar.archref_kdm.core.readDrifts.ReadDriftsAlgorithm;
+import br.ufscar.archref_kdm.ui.wizards.ArchitecturalRefactoringWizard;
 
 public class Page02SelectFileWithDrift extends WizardPage {
 
@@ -73,6 +74,7 @@ public class Page02SelectFileWithDrift extends WizardPage {
 		lFileDrifts.setText("File containing the drifts");
 
 		tPathFileDrifts = new Text(container, SWT.BORDER);
+		tPathFileDrifts.setText("C:\\TestsPlug-in\\old\\labSystemKDMComdesvios.xmi");
 		tPathFileDrifts.setEditable(false);
 		tPathFileDrifts.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
@@ -90,6 +92,7 @@ public class Page02SelectFileWithDrift extends WizardPage {
 		lFilePlannedArchitecture.setText("File containing the \r\nplanned architecture");
 
 		tPathFilePlanned = new Text(container, SWT.BORDER);
+		tPathFilePlanned.setText("C:\\TestsPlug-in\\systemExampleMVC\\archPlan.xmi");
 		tPathFilePlanned.setEditable(false);
 		tPathFilePlanned.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
@@ -108,12 +111,21 @@ public class Page02SelectFileWithDrift extends WizardPage {
 		
 		cbTypeActualArchitecture = new Combo(container, SWT.READ_ONLY);
 		cbTypeActualArchitecture.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		cbTypeActualArchitecture.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event event) {
+				getWizard().getContainer().updateButtons();
+			}
+
+		});
 
 		Label lFileActualArchitecture = new Label(container, SWT.NONE);
 		lFileActualArchitecture.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lFileActualArchitecture.setText("File containing the \r\nactual architecture");
 
 		tPathFileActual = new Text(container, SWT.BORDER);
+		tPathFileActual.setText("C:\\TestsPlug-in\\systemExampleMVC\\SystemExampleMVC-SimplesComDesvios_kdm.xmi");
 		tPathFileActual.setEditable(false);
 		tPathFileActual.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
@@ -201,8 +213,8 @@ public class Page02SelectFileWithDrift extends WizardPage {
 	
 	private void fillCbType() {
 		cbTypeActualArchitecture.removeAll();
-		cbAlgorithm.add(ALREAD_MAPPED);
-		cbAlgorithm.add(ORIGINAL_MAP);
+		cbTypeActualArchitecture.add(ALREAD_MAPPED);
+		cbTypeActualArchitecture.add(ORIGINAL_MAP);
 	}
 
 	private boolean validateCbAlgorithm() {
@@ -216,7 +228,7 @@ public class Page02SelectFileWithDrift extends WizardPage {
 	}
 	
 	private boolean validateCbType() {
-		if(cbAlgorithm.getSelectionIndex() == -1) {  
+		if(cbTypeActualArchitecture.getSelectionIndex() == -1) {  
 			setErrorMessage("Select one type of actual architecture to continue.");
 			return false;
 		}else{
@@ -252,6 +264,8 @@ public class Page02SelectFileWithDrift extends WizardPage {
 			return true;
 		}
 	}
+	
+	
 
 	@Override
 	public void performHelp(){
@@ -262,7 +276,7 @@ public class Page02SelectFileWithDrift extends WizardPage {
 	    shell.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 	    Browser browser = new Browser(shell, SWT.NONE);
-	    browser.setUrl("http://stackoverflow.com/questions/7322489/cant-put-content-behind-swt-wizard-help-button");
+	    browser.setUrl("http://advanse.dc.ufscar.br/index.php/tools");
 	    browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 	    shell.open();
@@ -273,24 +287,29 @@ public class Page02SelectFileWithDrift extends WizardPage {
 		return validateCbAlgorithm() && validateTPathFileDrifts() && validateTPathFilePlanned() && validateTPathFileActual() && validateCbType();
 	}
 
-	public String getPathKDMFile() {
-		return tPathFileDrifts.getText();
-	}
-
-	public ReadDriftsAlgorithm getAlgorithmType(){
-		return ReadDriftsAlgorithm.getEnumObject(cbAlgorithm.getText());
-	}
-
 	@Override
 	public IWizardPage getNextPage() {
+		executeWizardPageFinalAction();
 		if(isMapped()){
-			((Page03SelectDrift) super.getNextPage()).fillTDrifts();
+			((Page03SelectDrift) getWizard().getPage("page03")).fillTDrifts();
 			return getWizard().getPage("page03");
 		}else{
-			((Page02MapArchitecture) super.getNextPage()).fillPlannedArchitecture();
-			((Page02MapArchitecture) super.getNextPage()).fillActualArchitecture();
+			((Page02MapArchitecture) getWizard().getPage("page02_1")).fillPlannedArchitecture();
+			((Page02MapArchitecture) getWizard().getPage("page02_1")).fillActualArchitecture();
 			return getWizard().getPage("page02_1");
 		}
+	}
+
+	private void executeWizardPageFinalAction() {
+		ArchitecturalRefactoringWizard architecturalRefactoringWizard = (ArchitecturalRefactoringWizard) this.getWizard();
+		
+		architecturalRefactoringWizard.setPathActualArchitecture(this.tPathFileActual.getText());
+		architecturalRefactoringWizard.setPathDriftsFile(this.tPathFileDrifts.getText());
+		architecturalRefactoringWizard.setPathPlannedArchitecture(this.tPathFilePlanned.getText());
+		
+		architecturalRefactoringWizard.setTypeAlgorithmDrifts(ReadDriftsAlgorithm.getEnumObject(cbAlgorithm.getText()));
+		
+		architecturalRefactoringWizard.readSements();
 	}
 
 	/**
