@@ -1,17 +1,16 @@
 package br.ufscar.archref_kdm.ui.wizardsPage;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 import org.eclipse.gmt.modisco.omg.kdm.code.AbstractCodeElement;
-import org.eclipse.gmt.modisco.omg.kdm.code.ClassUnit;
 import org.eclipse.gmt.modisco.omg.kdm.code.CodeModel;
-import org.eclipse.gmt.modisco.omg.kdm.code.EnumeratedType;
-import org.eclipse.gmt.modisco.omg.kdm.code.InterfaceUnit;
 import org.eclipse.gmt.modisco.omg.kdm.code.Package;
+import org.eclipse.gmt.modisco.omg.kdm.core.KDMEntity;
+import org.eclipse.gmt.modisco.omg.kdm.kdm.KDMModel;
 import org.eclipse.gmt.modisco.omg.kdm.kdm.Segment;
 import org.eclipse.gmt.modisco.omg.kdm.structure.AbstractStructureElement;
 import org.eclipse.gmt.modisco.omg.kdm.structure.StructureModel;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -23,25 +22,31 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import br.ufscar.archref_kdm.core.mappingArchitecture.MapArchitecture;
+import br.ufscar.archref_kdm.ui.dialogs.SelectionModelDialog;
 import br.ufscar.archref_kdm.ui.enums.IconsType;
 import br.ufscar.archref_kdm.ui.wizards.ArchitecturalRefactoringWizard;
 import br.ufscar.kdm_manager.core.readers.modelReader.factory.KDMModelReaderJavaFactory;
-import br.ufscar.kdm_manager.core.recovers.recoverHierarchy.factory.RecoverHierarchyJavaFactory;
+import br.ufscar.kdm_manager.core.serializes.factory.KDMFileSerializeFactory;
 
 public class Page02MapArchitecture extends WizardPage {
 
-	private Tree treeArchitecturalElements;
-	private Tree treeCodeElements;
-	private StructureModel plannedArchitecture;
-	private CodeModel actualArchitecture;
-	private java.util.List<String> codeElementsPath;
-	private Tree treeElementsMapped;
+	private Tree treeArchitecturalElements = null;
+	private Tree treeCodeElements = null;
+	private Tree treeElementsMapped = null;
+
+	private StructureModel plannedArchitecture = null;
+	private StructureModel completeMap = null;
+
+	private CodeModel actualArchitecture = null;
+	private Button bRemoveMap;
+	private Button bMap;
 
 	/**
 	 * Create the wizard.
@@ -61,28 +66,28 @@ public class Page02MapArchitecture extends WizardPage {
 
 		setControl(container);
 		container.setLayout(new GridLayout(2, true));
-		
+
 		Label lArchitecturalElements = new Label(container, SWT.NONE);
 		lArchitecturalElements.setFont(SWTResourceManager.getFont("Segoe UI", 15, SWT.NORMAL));
 		lArchitecturalElements.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
 		lArchitecturalElements.setText("Architectural Elements");
-		
+
 		Label lCodeElements = new Label(container, SWT.NONE);
 		lCodeElements.setFont(SWTResourceManager.getFont("Segoe UI", 15, SWT.NORMAL));
 		lCodeElements.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
 		lCodeElements.setText("Code Elements");
-		
+
 		treeArchitecturalElements = new Tree(container, SWT.BORDER);
 		GridData gd_treeArchitecturalElements = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		gd_treeArchitecturalElements.minimumHeight = 100;
 		treeArchitecturalElements.setLayoutData(gd_treeArchitecturalElements);
-		
+
 		treeCodeElements = new Tree(container, SWT.BORDER);
 		GridData gd_treeCodeElements = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		gd_treeCodeElements.minimumHeight = 100;
 		treeCodeElements.setLayoutData(gd_treeCodeElements);
-		
-		Button bMap = new Button(container, SWT.NONE);
+
+		bMap = new Button(container, SWT.NONE);
 		bMap.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
@@ -93,8 +98,8 @@ public class Page02MapArchitecture extends WizardPage {
 		gd_bMap.widthHint = 150;
 		bMap.setLayoutData(gd_bMap);
 		bMap.setText("Map Element");
-		
-		Button bRemoveMap = new Button(container, SWT.NONE);
+
+		bRemoveMap = new Button(container, SWT.NONE);
 		GridData gd_bRemoveMap = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		gd_bRemoveMap.widthHint = 150;
 		bRemoveMap.setLayoutData(gd_bRemoveMap);
@@ -105,109 +110,206 @@ public class Page02MapArchitecture extends WizardPage {
 			}
 		});
 		bRemoveMap.setText("Remove Mapped Element");
-		
+
 		Label lElementsMapped = new Label(container, SWT.NONE);
 		lElementsMapped.setFont(SWTResourceManager.getFont("Segoe UI", 15, SWT.NORMAL));
 		lElementsMapped.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 2, 1));
 		lElementsMapped.setText("Elements Alread Mapped");
-		
+
 		treeElementsMapped = new Tree(container, SWT.BORDER);
 		GridData gd_treeElementsMapped = new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1);
 		gd_treeElementsMapped.minimumHeight = 90;
 		treeElementsMapped.setLayoutData(gd_treeElementsMapped);
-		
-		Button bSaveSimpleMap = new Button(container, SWT.NONE);
-		bSaveSimpleMap.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent e) {
-				executeInitialMap();
-				save("initialMap");
-			}
-		});
-		GridData gd_bSaveSimpleMap = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_bSaveSimpleMap.widthHint = 150;
-		bSaveSimpleMap.setLayoutData(gd_bSaveSimpleMap);
-		bSaveSimpleMap.setText("Save Simple Map");
-		
+
 		Button bSaveCompleteMap = new Button(container, SWT.NONE);
-		GridData gd_bSaveCompleteMap = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		GridData gd_bSaveCompleteMap = new GridData(SWT.CENTER, SWT.CENTER, false, false, 2, 1);
 		gd_bSaveCompleteMap.widthHint = 150;
 		bSaveCompleteMap.setLayoutData(gd_bSaveCompleteMap);
 		bSaveCompleteMap.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				executeCompleteMap();
-				save("completeMap");
+				if(validateAllElementsMap()){
+					executeCompleteMap();
+					save();
+				}
 			}
 		});
 		bSaveCompleteMap.setText("Save Complete Map");
-        
+
 	}
 
 	protected void executeCompleteMap() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	protected void executeInitialMap() {
-		// TODO Auto-generated method stub
-		TreeItem[] selection = treeElementsMapped.getItems();
-		for (TreeItem treeItem : selection) {
-			System.out.println(treeItem.getText());
-			Object data[] = (Object[]) treeItem.getData();
-			System.out.println(data[0].getClass());
-			System.out.println(data[1].getClass());
+		if(completeMap == null){
+			executeInitialMap();
+			completeMap = new MapArchitecture(completeMap).cleanAggregateds();
+			completeMap = new MapArchitecture(completeMap).mapCompleteArchitecture();
+			((ArchitecturalRefactoringWizard)this.getWizard()).getSegmentActualArchitecture().getModel().add(completeMap);
+			disableButtons();
 		}
 	}
 
-	protected void save(String string) {
-		// TODO Auto-generated method stub
-		
+
+	private void disableButtons() {
+		bMap.setEnabled(false);
+		bRemoveMap.setEnabled(false);
+	}
+	private void enableButtons() {
+		bMap.setEnabled(true);
+		bRemoveMap.setEnabled(true);
+	}
+
+	private boolean validateAllElementsMap() {
+		boolean allArchitecturalElementsMap = false;
+
+		TreeItem[] itemsArchitectural = treeArchitecturalElements.getItems();
+
+		for (TreeItem architecturalItem : itemsArchitectural) {
+			allArchitecturalElementsMap = validateAllElementsMap(architecturalItem);
+			if(!allArchitecturalElementsMap){
+				break;
+			}
+		}
+
+		if(!allArchitecturalElementsMap){
+			setErrorMessage("Please, map all architectural elements.");
+			MessageBox messageBox = new MessageBox(this.getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+			messageBox.setMessage("Do you really want to continue with missing mappings?");
+			messageBox.setText("Architectural elements mapping");
+			int response = messageBox.open();
+			if (response == SWT.YES){
+				allArchitecturalElementsMap = true;
+			}
+		}
+
+		return allArchitecturalElementsMap;
+	}
+
+	private boolean validateAllElementsMap(TreeItem parentItem) {
+		boolean found = false;
+		TreeItem[] itemsMapped = treeElementsMapped.getItems();
+		for (TreeItem mappedItem : itemsMapped) {
+			if(mappedItem.getText().contains(parentItem.getText())){
+				found = true;
+			}
+		}
+		if(!found){
+			return found;
+		}
+		for (TreeItem childItem : parentItem.getItems()) {
+			found = validateAllElementsMap(childItem);
+			if(!found){
+				return found;
+			}
+		}
+		return found;
+	}
+
+	private void executeInitialMap() {
+		completeMap = this.plannedArchitecture;
+		completeMap.setName("CompleteMap");
+
+		TreeItem[] items = treeElementsMapped.getItems();
+		for (TreeItem treeItem : items) {
+			Object data[] = (Object[]) treeItem.getData();
+
+			new MapArchitecture().mapInitialArchitecture((AbstractStructureElement)data[0], (KDMEntity) data[1]);
+
+		}
+
+	}
+
+	protected void save() {
+
+		String KDMPath = "file:///" + ((ArchitecturalRefactoringWizard)this.getWizard()).getPathActualArchitecture().replace(".xmi", "-mapped.xmi");
+
+		KDMFileSerializeFactory.eINSTANCE.createKDMFileSerializeFromSegment().serializeFromObject(KDMPath, ((ArchitecturalRefactoringWizard)this.getWizard()).getSegmentActualArchitecture());
 	}
 
 	protected void removeMappedElement() {
-		// TODO Auto-generated method stub
-		
+		this.completeMap = null;
+		if(validateSelectionElementMapped()){
+			TreeItem[] selection = treeElementsMapped.getSelection();
+			for (TreeItem treeItem : selection) {
+				treeItem.dispose();
+			}
+		}
+	}
+
+	private boolean validateSelectionElementMapped() {
+		if(treeElementsMapped.getSelection().length <= 0){
+			setErrorMessage("Please, select one mapping to remove.");
+			return false;
+		}else{
+			setErrorMessage(null); // clear error message.
+			return true;
+		}
 	}
 
 	protected void mapElements() {
-		// TODO Auto-generated method stub
-		String text = "";
-		Object data[] = new Object[2];
-		
-		TreeItem[] selection = treeCodeElements.getSelection();
-		for (TreeItem treeItem : selection) {
-			text = text.concat(treeItem.getText());
-			data[0] = treeItem.getData();
+		this.completeMap = null;
+		if(validateSelectionArchCode()){
+			String text = "";
+			Object data[] = new Object[2];
+
+			TreeItem[] selection2 = treeArchitecturalElements.getSelection();
+			for (TreeItem treeItem : selection2) {
+				text = text.concat(treeItem.getText());
+				data[0] = treeItem.getData();
+			}
+			text = text.concat(" was mapped to ");
+			TreeItem[] selection = treeCodeElements.getSelection();
+			for (TreeItem treeItem : selection) {
+				text = text.concat(treeItem.getText());
+				data[1] = treeItem.getData();
+			}
+
+			if(elementCanBeMap(text)){
+				TreeItem treeItemParent = new TreeItem(treeElementsMapped, 0);
+				treeItemParent.setText(text);
+				treeItemParent.setData(data);
+			}
 		}
-		text = text.concat(" was mapped to ");
-		TreeItem[] selection2 = treeArchitecturalElements.getSelection();
-		for (TreeItem treeItem : selection2) {
-			text = text.concat(treeItem.getText());
-			data[1] = treeItem.getData();
+	}
+
+	private boolean validateSelectionArchCode() {
+		if(treeArchitecturalElements.getSelection().length <= 0
+				|| treeCodeElements.getSelection().length <= 0){
+			setErrorMessage("Please, select one architectural element and one code element.");
+			return false;
+		}else{
+			setErrorMessage(null); // clear error message.
+			return true;
 		}
-		TreeItem treeItemParent = new TreeItem(treeElementsMapped, 0);
-		treeItemParent.setImage(IconsType.STRUCTURAL_ELEMENT.getImage());
-		treeItemParent.setText(text);
-		treeItemParent.setData(data);
-		
+	}
+
+	private boolean elementCanBeMap(String text) {
+
+		for (TreeItem treeItem : treeElementsMapped.getItems()) {
+			if(text.equalsIgnoreCase(treeItem.getText())){
+				setErrorMessage("These elements alread been mapped.");
+				return false;
+			}else{
+				setErrorMessage(null); // clear error message.
+			}
+		}
+		return true;
 	}
 
 	@Override
 	public void performHelp(){
 		//TODO Desenvolver o help dessa pagina
-	    Shell shell = new Shell(getShell());
-	    shell.setText("My Custom Help !!");
-	    shell.setLayout(new GridLayout());
-	    shell.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		Shell shell = new Shell(getShell());
+		shell.setText("My Custom Help !!");
+		shell.setLayout(new GridLayout());
+		shell.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-	    Browser browser = new Browser(shell, SWT.NONE);
-	    browser.setUrl("http://advanse.dc.ufscar.br/index.php/tools");
-	    browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		Browser browser = new Browser(shell, SWT.NONE);
+		browser.setUrl("http://advanse.dc.ufscar.br/index.php/tools");
+		browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-	    shell.open();
+		shell.open();
 	}
-	
+
 	@Override
 	public boolean canFlipToNextPage() {
 		return validateCanFlip();
@@ -232,6 +334,9 @@ public class Page02MapArchitecture extends WizardPage {
 	 * @author Landi
 	 */
 	public void fillPlannedArchitecture() {
+		String textInterface = "Select the planned architectural model:";
+		treeArchitecturalElements.removeAll();
+		enableButtons();
 		Segment segmentPlannedArchitecture = ((ArchitecturalRefactoringWizard)this.getWizard()).getSegmentPlannedArchitecture();
 		Map<String, java.util.List<StructureModel>> allStructure = KDMModelReaderJavaFactory.eINSTANCE.createKDMStructureModelReader().getAllFromSegment(segmentPlannedArchitecture);
 		plannedArchitecture = null;
@@ -240,46 +345,60 @@ public class Page02MapArchitecture extends WizardPage {
 				if(allStructure.get(key).size() == 1){
 					plannedArchitecture = allStructure.get(key).get(0); 
 				}else{
-					//TODO implementar pergunta sobre qual model é a arquitetura planejada e depois fazer o processamento
+					plannedArchitecture = (StructureModel) dialogWhatModelUse(allStructure.get(key), textInterface);
 				}
 			}
 		}else{
-			//TODO implementar pergunta sobre qual model é a arquitetura planejada e depois fazer o processamento
+			plannedArchitecture = (StructureModel) dialogWhatModelUse(allStructure, textInterface);
 		}
-		
+
 		TreeItem treeItemParent = null;
 		for (AbstractStructureElement abstractStructureElement : plannedArchitecture.getStructureElement()) {
-			
+
 			treeItemParent = new TreeItem(treeArchitecturalElements, 0);
 			treeItemParent.setImage(IconsType.STRUCTURAL_ELEMENT.getImage());
 			treeItemParent.setText("[" + abstractStructureElement.eClass().getName() + "] " + abstractStructureElement.getName());
 			treeItemParent.setData(abstractStructureElement);
-			
+
 			this.fillPlannedArchitecture(treeItemParent, abstractStructureElement);
-			
+
 		}
-		
-		
+
+
+	}
+
+	private <T> KDMModel dialogWhatModelUse(T models, String textInterface) {
+		SelectionModelDialog.setTextSelection(textInterface);
+		SelectionModelDialog dialog = new SelectionModelDialog(null);
+		dialog.fillTreeOptions(models);
+		// get the new values from the dialog
+		if (dialog.open() == Window.OK) {
+			return dialog.getSelectedModel();
+		}
+		return null;
 	}
 
 	private void fillPlannedArchitecture(TreeItem treeItemParent, AbstractStructureElement parentElement) {
 		TreeItem treeItemChild = null;
 		for (AbstractStructureElement childElement : parentElement.getStructureElement()) {
-			
+
 			treeItemChild = new TreeItem(treeItemParent, 0);
 			treeItemChild.setImage(IconsType.STRUCTURAL_ELEMENT.getImage());
 			treeItemChild.setText("[" + childElement.eClass().getName() + "] " + childElement.getName());
 			treeItemChild.setData(childElement);
-			
+
 			this.fillPlannedArchitecture(treeItemChild, childElement);
 		}
-		
+
 	}
 
 	/**
 	 * @author Landi
 	 */
 	public void fillActualArchitecture() {
+		String textInterface = "Select the actual architecture model:";
+		treeCodeElements.removeAll();
+		enableButtons();
 		Segment segmentPlannedArchitecture = ((ArchitecturalRefactoringWizard)this.getWizard()).getSegmentActualArchitecture();
 		Map<String, java.util.List<CodeModel>> allCode = KDMModelReaderJavaFactory.eINSTANCE.createKDMCodeModelReader().getAllFromSegment(segmentPlannedArchitecture);
 		actualArchitecture = null;
@@ -288,43 +407,39 @@ public class Page02MapArchitecture extends WizardPage {
 				if(allCode.get(key).size() == 1){
 					actualArchitecture = allCode.get(key).get(0); 
 				}else{
-					//TODO implementar pergunta sobre qual model é a arquitetura planejada e depois fazer o processamento
-					actualArchitecture = allCode.get(key).get(0);
+					actualArchitecture = (CodeModel) dialogWhatModelUse(allCode.get(key), textInterface);
 				}
 			}
 		}else{
-			for (String key : allCode.keySet()) {
-				actualArchitecture = allCode.get(key).get(0); 
-				break;
-			}//TODO implementar pergunta sobre qual model é a arquitetura planejada e depois fazer o processamento
+			actualArchitecture = (CodeModel) dialogWhatModelUse(allCode, textInterface);
 		}
-		
+
 		for (AbstractCodeElement abstractCodeElement : actualArchitecture.getCodeElement()) {
-			
+
 			TreeItem treeItemParent = new TreeItem(treeCodeElements, 0);
 			treeItemParent.setImage(IconsType.getImageByElement(abstractCodeElement));
 			treeItemParent.setText("[" + abstractCodeElement.eClass().getName() + "] " + abstractCodeElement.getName());
 			treeItemParent.setData(abstractCodeElement);
-			
+
 			if(abstractCodeElement instanceof Package){
 				this.fillActualArchitecture(treeItemParent, (Package)abstractCodeElement);
 			}
-			
+
 		}
 	}
 
 	private void fillActualArchitecture(TreeItem treeItemParent, Package parentElement) {
-		
+
 		for (AbstractCodeElement childElement : parentElement.getCodeElement()) {
 			TreeItem treeItemChild = new TreeItem(treeItemParent, 0);
 			treeItemChild.setImage(IconsType.getImageByElement(childElement));
 			treeItemChild.setText("[" + childElement.eClass().getName() + "] " + childElement.getName());
 			treeItemChild.setData(childElement);
-			
+
 			if(childElement instanceof Package){
 				this.fillActualArchitecture(treeItemChild, (Package) childElement);
 			}
-			
+
 		}	
 	}
 }

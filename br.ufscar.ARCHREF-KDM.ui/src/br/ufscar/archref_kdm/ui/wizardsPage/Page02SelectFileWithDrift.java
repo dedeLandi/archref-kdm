@@ -74,7 +74,7 @@ public class Page02SelectFileWithDrift extends WizardPage {
 		lFileDrifts.setText("File containing the drifts");
 
 		tPathFileDrifts = new Text(container, SWT.BORDER);
-		tPathFileDrifts.setText("C:\\TestsPlug-in\\old\\labSystemKDMComdesvios.xmi");
+		tPathFileDrifts.setText("C:\\Java\\workspaceMestradoJeeMars64\\archref-kdm\\br.ufscar.ARCHREF-KDM.ui\\tests\\br\\ufscar\\archref_kdm\\ui\\tests\\labSystemKDMComdesvios.xmi");
 		tPathFileDrifts.setEditable(false);
 		tPathFileDrifts.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
@@ -92,7 +92,7 @@ public class Page02SelectFileWithDrift extends WizardPage {
 		lFilePlannedArchitecture.setText("File containing the \r\nplanned architecture");
 
 		tPathFilePlanned = new Text(container, SWT.BORDER);
-		tPathFilePlanned.setText("C:\\TestsPlug-in\\systemExampleMVC\\archPlan.xmi");
+		tPathFilePlanned.setText("C:\\Java\\workspaceMestradoJeeMars64\\archref-kdm\\br.ufscar.ARCHREF-KDM.ui\\tests\\br\\ufscar\\archref_kdm\\ui\\tests\\archPlan.xmi");
 		tPathFilePlanned.setEditable(false);
 		tPathFilePlanned.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
@@ -125,7 +125,7 @@ public class Page02SelectFileWithDrift extends WizardPage {
 		lFileActualArchitecture.setText("File containing the \r\nactual architecture");
 
 		tPathFileActual = new Text(container, SWT.BORDER);
-		tPathFileActual.setText("C:\\TestsPlug-in\\systemExampleMVC\\SystemExampleMVC-SimplesComDesvios_kdm.xmi");
+		tPathFileActual.setText("C:\\Java\\workspaceMestradoJeeMars64\\archref-kdm\\br.ufscar.ARCHREF-KDM.ui\\tests\\br\\ufscar\\archref_kdm\\ui\\tests\\SystemExampleMVC-SimplesComDesvios_kdm.xmi");
 		tPathFileActual.setEditable(false);
 		tPathFileActual.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
