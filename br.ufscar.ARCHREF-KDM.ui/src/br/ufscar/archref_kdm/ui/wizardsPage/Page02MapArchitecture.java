@@ -141,13 +141,27 @@ public class Page02MapArchitecture extends WizardPage {
 	protected void executeCompleteMap() {
 		if(completeMap == null){
 			executeInitialMap();
-			completeMap = new MapArchitecture(completeMap).cleanAggregateds();
-			completeMap = new MapArchitecture(completeMap).mapCompleteArchitecture();
 			((ArchitecturalRefactoringWizard)this.getWizard()).getSegmentActualArchitecture().getModel().add(completeMap);
+			completeMap = new MapArchitecture(completeMap).mapCompleteArchitecture();
+//			completeMap = new MapArchitecture(completeMap, ((ArchitecturalRefactoringWizard)this.getWizard()).getSegmentActualArchitecture()).mapCompleteArchitecture();
 			disableButtons();
 		}
 	}
+	
+	private void executeInitialMap() {
+		completeMap = this.plannedArchitecture;
+		completeMap.setName("CompleteMap");
+		completeMap = new MapArchitecture(completeMap).cleanAggregateds();
 
+		TreeItem[] items = treeElementsMapped.getItems();
+		for (TreeItem treeItem : items) {
+			Object data[] = (Object[]) treeItem.getData();
+
+			new MapArchitecture().mapInitialArchitecture((AbstractStructureElement)data[0], (KDMEntity) data[1]);
+
+		}
+
+	}
 
 	private void disableButtons() {
 		bMap.setEnabled(false);
@@ -202,20 +216,6 @@ public class Page02MapArchitecture extends WizardPage {
 			}
 		}
 		return found;
-	}
-
-	private void executeInitialMap() {
-		completeMap = this.plannedArchitecture;
-		completeMap.setName("CompleteMap");
-
-		TreeItem[] items = treeElementsMapped.getItems();
-		for (TreeItem treeItem : items) {
-			Object data[] = (Object[]) treeItem.getData();
-
-			new MapArchitecture().mapInitialArchitecture((AbstractStructureElement)data[0], (KDMEntity) data[1]);
-
-		}
-
 	}
 
 	protected void save() {
