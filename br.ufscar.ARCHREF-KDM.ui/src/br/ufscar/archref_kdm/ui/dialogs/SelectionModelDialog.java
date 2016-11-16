@@ -101,28 +101,20 @@ public class SelectionModelDialog extends Dialog{
 	}
 
 	private void fillTree(Map<String, List<KDMModel>> allModels) {
-		System.out.println("fillTree map");
 		for (String nameModel : allModels.keySet()) {
 			int modelNumber = 1;
-			System.out.println(nameModel);
 			TreeItem treeItem = null;
-			System.out.println( allModels.get(nameModel).size());
 			for (KDMModel model : allModels.get(nameModel)) {
 				treeItem = new TreeItem(treeModelOptions, 0);
 				String name = model.getName() == null ? "anonymous" : model.getName();
 				treeItem.setText(nameModel + " [" + name + "] " + modelNumber);
-				System.out.println("for");
 				treeItem.setData(model);
 				modelNumber++;
-				System.out.println("end0");
 			}
-			System.out.println("end1");
 		}
-		System.out.println("end2");
 	}
 
 	private void fillTree(List<KDMModel> allModels) {
-		System.out.println("fillTree list");
 		int modelNumber = 1;
 		TreeItem treeItem = null;
 		for (KDMModel kdmModel : allModels) {
